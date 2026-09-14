@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #15161A;
+  --color-surface: #1D1F24;
+  --color-line: #2C2F36;
+  --color-text: #F0EFEA;
+  --color-muted: #9297A0;
+  --color-copper: #C08552;
+  --color-steel: #6F8695;
+}
+
+/*
+  "@theme inline" (not plain "@theme") is required here because these values
+  are references to OTHER CSS variables (the ones next/font injects via the
+  className on <html> in layout.tsx), not static values. Plain "@theme" is
+  for literal values like the colors above; "@theme inline" tells Tailwind
+  to keep the var() reference live instead of trying to resolve it at
+  build time, which is what next/font's setup needs.
+*/
+@theme inline {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: auto; /* Lenis handles smoothing in JS; avoid double-smoothing */
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+@keyframes metal-sheen-sweep {
+  0% {
+    background-position: -60% 0%, 0 0, 0 0;
+  }
+  100% {
+    background-position: 160% 0%, 0 0, 0 0;
+  }
+}
+
+.metal-sheen {
+  background-image: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgba(240, 239, 234, 0.18) 45%,
+      rgba(240, 239, 234, 0.35) 50%,
+      rgba(240, 239, 234, 0.18) 55%,
+      transparent 70%
+    ),
+    repeating-linear-gradient(100deg, #1a1c21 0px, #1a1c21 2px, #17181c 2px, #17181c 4px),
+    linear-gradient(160deg, #1d1f24, #121317);
+  background-size: 250% 100%, auto, auto;
+  animation: metal-sheen-sweep 6s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metal-sheen {
+    animation: none;
+    background-position: 50% 0%, 0 0, 0 0;
+  }
+}
+
+.glossy-overlay {
+  background-image: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.35) 55%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  mix-blend-mode: overlay;
+  animation: metal-sheen-sweep 6s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glossy-overlay {
+    animation: none;
+    background-position: 50% 0%;
+  }
+}

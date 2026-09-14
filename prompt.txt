@@ -1,0 +1,22 @@
+You are an expert full-stack software architect and Medusa.js developer. I am building a custom e-commerce web application for selling printed metal sheets. The platform offers both pre-designed catalog items and a custom print configurator allowing users to upload their own artwork.
+
+We are building this project iteratively to respect AI token limits. In this first response, focus exclusively on Module 1: Project Scaffolding and Custom Data Models. Do not write the workflows or frontend components yet—stop once the backend structure and custom data model are fully defined.
+
+### System Architecture Blueprint (HLD & LLD Summary)
+- Backend: Medusa.js (v2) modular commerce engine running on Node.js and TypeScript, backed by PostgreSQL.
+- Frontend: Next.js (App Router) storefront communicating via Medusa REST APIs/SDK.
+- Asset Storage: Cloud object storage (AWS S3 or Cloudflare R2) using pre-signed upload URLs.
+- Built-in Commerce: Users, products, carts, and orders are handled natively by Medusa. We only need custom entities for specific printing logic.
+
+### Task for This Response (Module 1 Only):
+1. **Directory Structure:** Provide the folder tree layout for a Medusa.js v2 project showing where custom modules and custom data models reside.
+2. **Custom Data Model (`CustomPrintJob`):** Write the TypeScript code using Medusa v2's model definition utilities (`model.define`) to create a custom data model tracking:
+   - `id` (PK)
+   - `order_id` ( linking to Medusa's native order system if applicable, or cart/line item reference)
+   - `original_image_url`
+   - `processed_image_url`
+   - `dimensions` (string)
+   - `finish_type` (e.g., matte, gloss)
+   - `dpi_status` (passed/failed)
+   - `status` (pending_processing, ready, failed)
+3. **Instructions for Next Step:** At the very end of your response, explicitly state that Module 1 is complete and ask if you should proceed to Module 2 (Workflows & Image Processing Steps).
