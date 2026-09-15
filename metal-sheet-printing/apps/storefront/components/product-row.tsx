@@ -1,17 +1,20 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { motion, Variants } from "framer-motion"
+import { addLineItem } from "../lib/cart"
 
 type ProductRowProps = {
   id: string
   title: string
   images: string[]
+  variants: { id: string; title: string }[]
 }
 
 const fanVariants: Variants = {
   hidden: (i: number) => ({
-    x: `${(1 - i) * 108}%`, // converge toward the center slot (index 1)
+    x: `${(1 - i) * 108}%`,
     rotate: (1 - i) * 10,
     scale: 0.85,
     opacity: i === 1 ? 1 : 0,
@@ -25,8 +28,18 @@ const fanVariants: Variants = {
   }),
 }
 
-export function ProductRow({ id, title, images }: ProductRowProps) {
+export function ProductRow({ id, title, images, variants }: ProductRowProps) {
   const displayImages = images.slice(0, 3)
+  const [cartStatus, setCartStatus] = useState<"idle" | "adding" | "added">("idle")
+
+  async function handleQuickAdd(e: React.MouseEvent) {
+    e.preventDefault() // stop the surrounding <Link> from navigating
+    e.stopPropagation()
+    if (!variants[0]) return
+    setCartStatus("adding")
+    await addLineItem(variants[0].id, 1)
+    setCartStatus("added")
+  }
 
   return (
     <Link
@@ -52,6 +65,13 @@ export function ProductRow({ id, title, images }: ProductRowProps) {
 
       <div className="text-center md:text-left">
         <h3 className="font-display text-xl font-medium md:text-2xl">{title}</h3>
+        <button
+          onClick={handleQuickAdd}
+          disabled={cartStatus === "adding" || !variants[0]}
+          className="mt-3 rounded-full border border-line px-4 py-2 text-xs font-medium disabled:opacity-50"
+        >
+          {cartStatus === "added" ? "Added ✓" : cartStatus === "adding" ? "Adding…" : "Add to cart"}
+        </button>
       </div>
     </Link>
   )

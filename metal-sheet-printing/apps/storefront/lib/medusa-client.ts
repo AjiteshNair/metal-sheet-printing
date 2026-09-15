@@ -64,6 +64,7 @@ export async function confirmPrintJob(printJobId: string) {
 export async function listCatalogProducts() {
   const res = await fetch(`${BACKEND_URL}/store/products?limit=50`, {
     headers: storeHeaders,
+    cache: "no-store",
   })
   if (!res.ok) {
     const body = await res.text()
@@ -76,7 +77,13 @@ export async function listCatalogProducts() {
       id: p.id,
       title: p.title,
       images: (p.images ?? []).map((img: any) => img.url).slice(0, 3),
-    })) as Array<{ id: string; title: string; images: string[] }>
+      variants: (p.variants ?? []).map((v: any) => ({ id: v.id, title: v.title })),
+    })) as Array<{
+    id: string
+    title: string
+    images: string[]
+    variants: { id: string; title: string }[]
+  }>
 }
 
 export async function getProduct(id: string) {

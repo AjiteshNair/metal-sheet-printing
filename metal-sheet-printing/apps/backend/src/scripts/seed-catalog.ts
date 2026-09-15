@@ -39,7 +39,7 @@ export default async function seedCatalog({ container }: ExecArgs) {
     return
   }
 
-  await createProductsWorkflow(container).run({
+ await createProductsWorkflow(container).run({
     input: {
       products: [
         ...CATALOG_ITEMS.map((item) => ({
@@ -53,12 +53,14 @@ export default async function seedCatalog({ container }: ExecArgs) {
             {
               title: "Matte",
               options: { Finish: "Matte" },
-              prices: [{ amount: 4900, currency_code: "usd" }],
+              prices: [{ amount: 4900, currency_code: "inr" }],
+              manage_inventory: false,
             },
             {
               title: "Gloss",
               options: { Finish: "Gloss" },
-              prices: [{ amount: 5400, currency_code: "usd" }],
+              prices: [{ amount: 5400, currency_code: "inr" }],
+              manage_inventory: false,
             },
           ],
           sales_channels: [{ id: defaultSalesChannel.id }],
@@ -74,7 +76,8 @@ export default async function seedCatalog({ container }: ExecArgs) {
             {
               title: "Standard",
               options: { Type: "Standard" },
-              prices: [{ amount: 5900, currency_code: "usd" }],
+              prices: [{ amount: 5900, currency_code: "inr" }],
+              manage_inventory: false,
             },
           ],
           sales_channels: [{ id: defaultSalesChannel.id }],

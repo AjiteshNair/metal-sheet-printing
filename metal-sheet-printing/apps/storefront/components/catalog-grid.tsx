@@ -9,7 +9,13 @@ export async function CatalogGrid() {
       <h2 className="pt-10 font-display text-xl font-medium md:pt-16">From the catalog</h2>
       <div className="mt-4">
         {products.map((product) => (
-          <ProductRow key={product.id} id={product.id} title={product.title} images={product.images} />
+          <ProductRow
+            key={product.id}
+            id={product.id}
+            title={product.title}
+            images={product.images}
+            variants={product.variants}
+          />
         ))}
       </div>
     </section>
