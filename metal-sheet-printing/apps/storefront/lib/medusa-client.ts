@@ -62,7 +62,7 @@ export async function confirmPrintJob(printJobId: string) {
 }
 
 export async function listCatalogProducts() {
-  const res = await fetch(`${BACKEND_URL}/store/products?limit=8`, {
+  const res = await fetch(`${BACKEND_URL}/store/products?limit=50`, {
     headers: storeHeaders,
   })
   if (!res.ok) {
@@ -70,11 +70,13 @@ export async function listCatalogProducts() {
     throw new Error(`Failed to load catalog products: ${res.status} ${body}`)
   }
   const data = await res.json()
-  return data.products.map((p: any) => ({
-    id: p.id,
-    title: p.title,
-    images: (p.images ?? []).map((img: any) => img.url).slice(0, 3),
-  })) as Array<{ id: string; title: string; images: string[] }>
+  return data.products
+    .filter((p: any) => p.handle !== "custom-print")
+    .map((p: any) => ({
+      id: p.id,
+      title: p.title,
+      images: (p.images ?? []).map((img: any) => img.url).slice(0, 3),
+    })) as Array<{ id: string; title: string; images: string[] }>
 }
 
 export async function getProduct(id: string) {

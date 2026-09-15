@@ -1,8 +1,13 @@
 import { getProduct } from "../../../lib/medusa-client"
 import { AddToCartButton } from "../../../components/add-to-cart-button"
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
-  const product = await getProduct(params.id)
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const product = await getProduct(id)
 
   if (!product) {
     return <main className="px-5 py-10 md:px-12">Product not found.</main>
