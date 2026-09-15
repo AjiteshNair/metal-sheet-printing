@@ -1,5 +1,5 @@
 import { MetalSheenPanel } from "../components/metal-sheen-panel"
-import { CatalogStrip } from "../components/catalog-strip"
+import { CatalogGrid } from "../components/catalog-grid"
 import Link from "next/link"
 
 export default function HomePage() {
@@ -35,9 +35,8 @@ export default function HomePage() {
         </div>
       </MetalSheenPanel>
 
-      <CatalogStrip />
+      <CatalogGrid />
 
-      {/* Sticky mobile CTA — keeps the primary action within thumb reach */}
       <div className="safe-bottom fixed bottom-0 left-0 right-0 z-10 border-t border-line bg-surface/95 px-5 py-3 backdrop-blur md:hidden">
         <Link
           href="/configure"

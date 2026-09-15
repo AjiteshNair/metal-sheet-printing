@@ -47,7 +47,6 @@ export async function uploadToCloudinary(
   formData.append("api_key", credentials.api_key)
   formData.append("public_id", credentials.public_id)
 
-  // Note: no storeHeaders here — this request goes to Cloudinary, not Medusa.
   const res = await fetch(credentials.upload_endpoint, { method: "POST", body: formData })
   if (!res.ok) throw new Error("Cloudinary upload failed")
   return res.json()
@@ -68,13 +67,22 @@ export async function listCatalogProducts() {
   })
   if (!res.ok) {
     const body = await res.text()
-    console.error(`listCatalogProducts failed: ${res.status} ${res.statusText}`, body)
     throw new Error(`Failed to load catalog products: ${res.status} ${body}`)
   }
   const data = await res.json()
-  return data.products as Array<{
-    id: string
-    title: string
-    thumbnail: string | null
-  }>
+  return data.products.map((p: any) => ({
+    id: p.id,
+    title: p.title,
+    images: (p.images ?? []).map((img: any) => img.url).slice(0, 3),
+  })) as Array<{ id: string; title: string; images: string[] }>
+}
+
+export async function getProduct(id: string) {
+  const res = await fetch(`${BACKEND_URL}/store/products/${id}`, {
+    headers: storeHeaders,
+    cache: "no-store",
+  })
+  if (!res.ok) return null
+  const data = await res.json()
+  return data.product
 }
