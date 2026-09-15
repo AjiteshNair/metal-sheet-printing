@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google"
 import { SmoothScrollProvider } from "../components/smooth-scroll-provider"
+import { GlobalSheenBackground } from "../components/global-sheen-background"
 import "./globals.css"
 
 const display = Space_Grotesk({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="font-body">
+        <GlobalSheenBackground />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

@@ -10,14 +10,6 @@
   --color-steel: #6F8695;
 }
 
-/*
-  "@theme inline" (not plain "@theme") is required here because these values
-  are references to OTHER CSS variables (the ones next/font injects via the
-  className on <html> in layout.tsx), not static values. Plain "@theme" is
-  for literal values like the colors above; "@theme inline" tells Tailwind
-  to keep the var() reference live instead of trying to resolve it at
-  build time, which is what next/font's setup needs.
-*/
 @theme inline {
   --font-display: var(--font-display);
   --font-body: var(--font-body);
@@ -29,25 +21,13 @@
 }
 
 html {
-  scroll-behavior: auto; /* Lenis handles smoothing in JS; avoid double-smoothing */
+  scroll-behavior: auto;
 }
 
 body {
-  background-color: var(--color-bg);
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-.safe-bottom {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  /* no background-color here anymore — the fixed sheen layer provides it */
 }
 
 @keyframes metal-sheen-sweep {
@@ -59,7 +39,7 @@ body {
   }
 }
 
-.metal-sheen {
+.metal-sheen-bg {
   background-image: linear-gradient(
       100deg,
       transparent 30%,
@@ -72,13 +52,6 @@ body {
     linear-gradient(160deg, #1d1f24, #121317);
   background-size: 250% 100%, auto, auto;
   animation: metal-sheen-sweep 6s ease-in-out infinite alternate;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .metal-sheen {
-    animation: none;
-    background-position: 50% 0%, 0 0, 0 0;
-  }
 }
 
 .glossy-overlay {
@@ -96,8 +69,13 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .metal-sheen-bg,
   .glossy-overlay {
     animation: none;
     background-position: 50% 0%;
   }
+}
+
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
