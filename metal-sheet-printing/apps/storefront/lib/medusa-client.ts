@@ -1,25 +1,15 @@
 const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL!
-const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!
 
-const storeHeaders = {
-  "Content-Type": "application/json",
-  "x-publishable-api-key": PUBLISHABLE_KEY,
-}
-
-export async function createPrintJob(input: {
-  file_name: string
-  dimensions: string
-  finish_type: "matte" | "gloss" | "brushed" | "satin"
-}) {
-  const res = await fetch(`${BACKEND_URL}/store/print-jobs`, {
+export async function createPrintJob(input: { file_name: string }) {
+  const res = await fetch(`${BACKEND_URL}/custom-prints`, {
     method: "POST",
-    headers: storeHeaders,
-    body: JSON.stringify(input),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fileName: input.file_name }),
   })
   if (!res.ok) throw new Error("Failed to create print job")
   return res.json() as Promise<{
-    print_job: { id: string }
-    upload_credentials: {
+    customPrint: { id: number }
+    uploadCredentials: {
       signature: string
       timestamp: number
       api_key: string
@@ -52,18 +42,16 @@ export async function uploadToCloudinary(
   return res.json()
 }
 
-export async function confirmPrintJob(printJobId: string) {
-  const res = await fetch(`${BACKEND_URL}/store/print-jobs/${printJobId}/validate`, {
+export async function confirmPrintJob(printJobId: number) {
+  const res = await fetch(`${BACKEND_URL}/custom-prints/${printJobId}/validate`, {
     method: "POST",
-    headers: storeHeaders,
   })
   if (!res.ok) throw new Error("DPI validation failed")
   return res.json()
 }
 
 export async function listCatalogProducts() {
-  const res = await fetch(`${BACKEND_URL}/store/products?limit=50`, {
-    headers: storeHeaders,
+  const res = await fetch(`${BACKEND_URL}/products`, {
     cache: "no-store",
   })
   if (!res.ok) {
@@ -71,27 +59,20 @@ export async function listCatalogProducts() {
     throw new Error(`Failed to load catalog products: ${res.status} ${body}`)
   }
   const data = await res.json()
-  return data.products
-    .filter((p: any) => p.handle !== "custom-print")
+  return data
+    .filter((p: any) => p.isActive)
     .map((p: any) => ({
       id: p.id,
-      title: p.title,
-      images: (p.images ?? []).map((img: any) => img.url).slice(0, 3),
-      variants: (p.variants ?? []).map((v: any) => ({ id: v.id, title: v.title })),
-    })) as Array<{
-    id: string
-    title: string
-    images: string[]
-    variants: { id: string; title: string }[]
-  }>
+      title: p.name,
+      price: Number(p.price),
+      images: (p.images ?? []).map((img: any) => img.imgurl).slice(0, 3),
+    })) as Array<{ id: number; title: string; price: number; images: string[] }>
 }
 
 export async function getProduct(id: string) {
-  const res = await fetch(`${BACKEND_URL}/store/products/${id}`, {
-    headers: storeHeaders,
+  const res = await fetch(`${BACKEND_URL}/products/${id}`, {
     cache: "no-store",
   })
   if (!res.ok) return null
-  const data = await res.json()
-  return data.product
+  return res.json()
 }
